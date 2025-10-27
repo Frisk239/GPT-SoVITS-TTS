@@ -1,0 +1,87 @@
+/* 全局基础样式 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'HanYiKaiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #333;
+  background-color: #fff;
+  overflow-x: hidden;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* 全局链接样式 */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+}
+
+/* 全局输入框样式 */
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+}
+
+/* 图片优化 */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  /* 移除hover效果，防止触摸设备出现残留样式 */
+  .btn:hover,
+  button:hover,
+  a:hover {
+    transform: none !important;
+  }
+
+  /* 增加触摸目标尺寸 */
+  button,
+  .btn,
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* 自定义字体 */
+@font-face {
+  font-family: 'FangZhengFengYaKaiSong';
+  src: url('/static/minpaixinyu-static/font/方正风雅楷宋简体.TTF') format('truetype');
+}
+
+@font-face {
+  font-family: 'HanYiKaiTi';
+  src: url('/static/minpaixinyu-static/font/汉仪楷体简.ttf') format('truetype');
+}

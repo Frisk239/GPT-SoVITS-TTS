@@ -1,0 +1,220 @@
+.navbar {
+  background-color: rgba(255, 235, 205, 0.8); /* 米黄色半透明 */
+  backdrop-filter: blur(10px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 10px 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Logo */
+.navbar-logo {
+  flex-shrink: 0;
+  margin-right: 100px;
+}
+
+.logo-img {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  transform: translateY(-8px);
+}
+
+/* 导航链接 */
+.navbar-links {
+  display: flex;
+  gap: 30px;
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  font-family: 'FangZhengFengYaKaiSong', serif;
+  transition: color 0.3s, transform 0.2s;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.nav-link:hover:not(.coming-soon) {
+  color: #8B4513;
+  transform: translateY(-2px);
+  background-color: rgba(139, 69, 19, 0.1);
+}
+
+
+
+.nav-link.coming-soon {
+  color: #999;
+  cursor: not-allowed;
+}
+
+.nav-link.coming-soon:hover {
+  color: #999;
+  transform: none;
+  background-color: transparent;
+}
+
+/* 汉堡菜单按钮 */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001;
+}
+
+.hamburger-menu span {
+  width: 30px;
+  height: 3px;
+  background: #333;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger-menu.open span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger-menu.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-menu.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* 移动端菜单遮罩 */
+.menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* 移动端菜单样式 */
+.navbar-links.open {
+  transform: translateX(0);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .navbar-links {
+    gap: 20px;
+  }
+
+  .nav-link {
+    font-size: 14px;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    position: relative;
+  }
+
+  .navbar-logo {
+    margin-right: auto;
+  }
+
+  /* 显示汉堡菜单 */
+  .hamburger-menu {
+    display: flex;
+  }
+
+  /* 隐藏桌面端导航链接 */
+  .navbar-links {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    background: rgba(255, 235, 205, 0.95);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 80px 30px 30px;
+    gap: 25px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+  }
+
+  /* 显示移动端菜单遮罩 */
+  .menu-overlay {
+    display: block;
+  }
+
+  .logo-img {
+    height: 40px;
+    transform: translateY(-8px);
+  }
+
+  .nav-link {
+    font-size: 16px;
+    padding: 12px 20px;
+    width: 100%;
+    text-align: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .nav-link:hover:not(.coming-soon) {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 8px 15px;
+  }
+
+  .hamburger-menu {
+    width: 25px;
+    height: 25px;
+  }
+
+  .hamburger-menu span {
+    width: 25px;
+    height: 2px;
+  }
+
+  .navbar-links {
+    width: 250px;
+    padding: 70px 20px 20px;
+    gap: 20px;
+  }
+
+  .nav-link {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+}
