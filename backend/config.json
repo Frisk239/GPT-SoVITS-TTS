@@ -1,0 +1,44 @@
+{
+  "pages": {
+    "tts-chat": {
+      "role": "minpaixinyu",
+      "description": "闽仔 - 智能语音对话助手",
+      "personality": "我是闽仔，你的闽派文化小伙伴。我可以与你进行智能对话，介绍福建的传统文化和历史故事。我的声音温柔亲切，适合进行文化交流和知识分享。",
+      "voice_config": {
+        "gpt_model": "minpaixinyu-e15.ckpt",
+        "sovits_model": "minpaixinyu_e8_s200.pth",
+        "ref_audio_path": "../models/GPT-SoVITS/GPT-SoVITS-slice/minpaixinyu-slicer.wav",
+        "ref_audio_text": "第一场雪，这是入冬以来，胶东半岛上的第一场雪。",
+        "voice_params": {
+          "speed": 1.0,
+          "pitch_shift": 1.0,
+          "emotion_intensity": 0.7
+        }
+      },
+      "chat_config": {
+        "system_prompt": "你是一个名为闽仔的AI助手，专门介绍福建文化。你说话温柔亲切，知识丰富，总是以积极的态度回答用户的问题。你会用生动的语言描述福建的历史、文化和风景。",
+        "temperature": 0.8,
+        "max_tokens": 1000
+      }
+    }
+  },
+  "default_page": "tts-chat",
+  "synthesis_params": {
+    "top_k": 15,
+    "top_p": 1.0,
+    "temperature": 1.0,
+    "speed": 1.0,
+    "noise_scale": 0.5,
+    "text_split_method": "cut5",
+    "batch_size": 1,
+    "fragment_interval": 0.3,
+    "seed": -1,
+    "parallel_infer": true,
+    "repetition_penalty": 1.35
+  },
+  "model_paths": {
+    "gpt_weights_dir": "../models/GPT-SoVITS/GPT_weights_v2Pro",
+    "sovits_weights_dir": "../models/GPT-SoVITS/SoVITS_weights_v2Pro",
+    "gpt_sovits_module": "./GPT_SoVITS"
+  }
+}
