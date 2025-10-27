@@ -74,7 +74,21 @@ async def synthesize_speech(request: SynthesisRequest, background_tasks: Backgro
         音频流
     """
     try:
-        logger.info(f"🎵 收到语音合成请求: {request.text[:50]}...")
+        # 编码验证和日志
+        logger.info(f"🎵 收到语音合成请求 - 原始文本: {repr(request.text)}")
+        logger.info(f"🎵 收到语音合成请求 - 显示文本: {request.text[:50]}...")
+
+        # 验证文本编码
+        if not request.text or request.text.strip() == "":
+            raise HTTPException(status_code=400, detail="文本不能为空")
+
+        # 检查是否包含中文字符
+        has_chinese = any('\u4e00' <= char <= '\u9fff' for char in request.text)
+        logger.info(f"🎵 文本包含中文字符: {has_chinese}")
+
+        # 如果文本是乱码，尝试提示用户
+        if '??' in request.text and has_chinese:
+            logger.warning("⚠️ 检测到可能的编码问题，请确保客户端使用UTF-8编码")
 
         # 调用语音合成服务
         audio_data = await gpt_sovits_service.synthesize_speech(
