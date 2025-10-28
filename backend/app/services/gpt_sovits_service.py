@@ -543,7 +543,7 @@ class GPTSoVITSService:
                 "speed_factor": voice_params.get("speed", 1.0),
                 "fragment_interval": 0.3,
                 "seed": -1,
-                "parallel_infer": True,
+                "parallel_infer": False,  # 禁用并行处理，保证句子顺序
                 "repetition_penalty": 1.35
             }
 
