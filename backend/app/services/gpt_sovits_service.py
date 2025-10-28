@@ -376,20 +376,27 @@ class GPTSoVITSService:
                 os.path.join(os.path.dirname(__file__), "../../../", self.config_path)  # 项目根目录
             ]
 
+            logger.info(f"🔍 尝试加载配置文件，尝试路径: {possible_paths}")
+
             for path in possible_paths:
                 if os.path.exists(path):
                     try:
                         with open(path, 'r', encoding='utf-8') as f:
-                            return json.load(f)
+                            config = json.load(f)
+                            logger.info(f"✅ 成功从 {path} 加载配置文件")
+                            logger.info(f"📋 配置内容: pages={list(config.get('pages', {}).keys())}, default_page={config.get('default_page')}")
+                            return config
                     except Exception as e:
-                        logger.error(f"加载配置文件失败 {path}: {e}")
+                        logger.error(f"❌ 加载配置文件失败 {path}: {e}")
                         continue
+                else:
+                    logger.debug(f"⚠️ 配置文件不存在: {path}")
 
-            logger.warning(f"配置文件 {self.config_path} 不存在，使用默认配置")
+            logger.warning(f"⚠️ 所有配置文件路径都不存在，使用默认配置")
             return self._get_default_config()
 
         except Exception as e:
-            logger.error(f"加载配置文件失败: {e}")
+            logger.error(f"❌ 加载配置文件异常: {e}")
             return self._get_default_config()
 
     def _get_default_config(self) -> Dict:
@@ -416,7 +423,7 @@ class GPTSoVITSService:
                 "top_k": 15,
                 "top_p": 1.0,
                 "temperature": 1.0,
-                "speed": 1.0,
+                "speed": 1.2,
                 "noise_scale": 0.5,
                 "text_split_method": "cut5",
                 "batch_size": 1,

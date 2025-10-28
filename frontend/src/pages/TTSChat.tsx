@@ -36,9 +36,9 @@ const TTSChat: React.FC = () => {
     const welcomeMessage: Message = {
       id: 'welcome',
       role: 'assistant',
-      content: `时代之问，闽派来答！
+      content: `时代之问，闽派来答！✨
 
-Hello，我是你们的闽派文化小伙伴闽仔！
+Hello～ 我是你们的闽派文化小伙伴「闽仔」！🔥
 
 我超懂咱们大美福建的闽派文化！想知道福州侯官多悠久、泉州海丝多传奇？还是妈祖故事、朱子故里、龙岩红色历史？尽管问我，包你满意！`,
       timestamp: new Date()

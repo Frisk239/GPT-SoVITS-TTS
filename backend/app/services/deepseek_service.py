@@ -114,16 +114,18 @@ class DeepSeekService:
                     import os
                     import json
                     config_path = os.path.join(os.path.dirname(__file__), "../../config.json")
+                    logger.info(f"🔍 DeepSeek服务尝试读取配置文件: {config_path}")
                     if os.path.exists(config_path):
                         with open(config_path, 'r', encoding='utf-8') as f:
                             config = json.load(f)
                             page_config = config.get("pages", {}).get(page, {})
                             personality = page_config.get("personality", "")
                             chat_config = page_config.get("chat_config", {})
+                            logger.info(f"✅ DeepSeek服务成功读取配置: page={page}, personality长度={len(personality)}")
                     else:
-                        logger.warning(f"配置文件不存在: {config_path}")
+                        logger.warning(f"⚠️ DeepSeek服务配置文件不存在: {config_path}")
                 except Exception as e:
-                    logger.warning(f"读取配置文件失败: {e}")
+                    logger.warning(f"❌ DeepSeek服务读取配置文件失败: {e}")
 
             system_prompt = f"""你是一个名为闽仔的AI助手，专门介绍福建文化和历史。
 

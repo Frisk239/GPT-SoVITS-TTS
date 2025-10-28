@@ -44,6 +44,8 @@ async def chat_with_ai(request: ChatRequest):
         personality = page_config.get("personality", "")
         chat_config = page_config.get("chat_config", {})
 
+        logger.info(f"📋 页面配置: page={request.page}, personality长度={len(personality)}, chat_config={bool(chat_config)}")
+
         # 调用DeepSeek生成回复
         ai_response = await deepseek_service.generate_fujian_response(
             user_message=request.message,

@@ -10,7 +10,7 @@
         "ref_audio_path": "../models/GPT-SoVITS/GPT-SoVITS-slice/minpaixinyu-slicer.wav",
         "ref_audio_text": "第一场雪，这是入冬以来，胶东半岛上的第一场雪。",
         "voice_params": {
-          "speed": 1.0,
+          "speed": 1.2,
           "pitch_shift": 1.0,
           "emotion_intensity": 0.7
         }
