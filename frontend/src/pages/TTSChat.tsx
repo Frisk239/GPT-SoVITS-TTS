@@ -7,13 +7,17 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  isPlaying?: boolean;
+  audioUrl?: string;
 }
 
 const TTSChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [playingMessageId, setPlayingMessageId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // 常见问题
   const commonQuestions = [
@@ -108,6 +112,74 @@ Hello～ 我是你们的闽派文化小伙伴「闽仔」！🔥
     }
   };
 
+  // 语音播放功能
+  const handlePlayAudio = async (message: Message) => {
+    if (!message.content.trim()) return;
+
+    try {
+      setIsLoading(true);
+
+      // 调用语音合成API
+      const response = await fetch('http://localhost:8000/api/voice/synthesize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: message.content,
+          page: 'tts-chat'
+        }),
+        signal: AbortSignal.timeout(500000) // 500秒超时
+      });
+
+      if (!response.ok) {
+        throw new Error(`语音合成失败: ${response.status}`);
+      }
+
+      // 获取音频数据
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+
+      // 创建音频元素
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+
+      // 设置播放状态
+      setPlayingMessageId(message.id);
+
+      // 播放音频
+      await audio.play();
+
+      // 播放结束处理
+      audio.onended = () => {
+        setPlayingMessageId(null);
+        URL.revokeObjectURL(audioUrl);
+      };
+
+      // 播放错误处理
+      audio.onerror = () => {
+        setPlayingMessageId(null);
+        URL.revokeObjectURL(audioUrl);
+        console.error('音频播放失败');
+      };
+
+    } catch (error) {
+      console.error('语音合成失败:', error);
+      setPlayingMessageId(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 停止播放
+  const handleStopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setPlayingMessageId(null);
+    }
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -164,6 +236,18 @@ Hello～ 我是你们的闽派文化小伙伴「闽仔」！🔥
                 {message.content.split('\n').map((line, index) => (
                   <p key={index}>{line}</p>
                 ))}
+              </div>
+              <div className="message-actions">
+                {message.role === 'assistant' && message.id !== 'welcome' && (
+                  <button
+                    onClick={() => playingMessageId === message.id ? handleStopAudio() : handlePlayAudio(message)}
+                    className={`audio-btn ${playingMessageId === message.id ? 'playing' : ''}`}
+                    disabled={isLoading}
+                    title={playingMessageId === message.id ? '停止播放' : '语音播放'}
+                  >
+                    {playingMessageId === message.id ? '⏸️' : '🔊'}
+                  </button>
+                )}
               </div>
               <div className="message-time">
                 {message.timestamp.toLocaleTimeString('zh-CN', {
