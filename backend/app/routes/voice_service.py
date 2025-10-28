@@ -47,7 +47,8 @@ async def chat_with_ai(request: ChatRequest):
         # 调用DeepSeek生成回复
         ai_response = await deepseek_service.generate_fujian_response(
             user_message=request.message,
-            personality=personality
+            personality=personality,
+            page=request.page
         )
 
         logger.info(f"✅ AI回复生成完成: {len(ai_response)} 字符")

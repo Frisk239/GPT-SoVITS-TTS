@@ -92,7 +92,8 @@ class DeepSeekService:
         self,
         user_message: str,
         context: Optional[List[Dict]] = None,
-        personality: str = ""
+        personality: str = "",
+        page: str = "tts-chat"
     ) -> str:
         """
         生成福建文化相关的回复
@@ -100,12 +101,30 @@ class DeepSeekService:
         Args:
             user_message: 用户消息
             context: 对话上下文
-            personality: 角色人设
+            personality: 角色人设（如果未提供，将从config.json读取）
+            page: 页面标识，用于读取对应配置
 
         Returns:
             AI回复内容
         """
         try:
+            # 如果没有提供personality，从config.json读取
+            if not personality:
+                try:
+                    import os
+                    import json
+                    config_path = os.path.join(os.path.dirname(__file__), "../../config.json")
+                    if os.path.exists(config_path):
+                        with open(config_path, 'r', encoding='utf-8') as f:
+                            config = json.load(f)
+                            page_config = config.get("pages", {}).get(page, {})
+                            personality = page_config.get("personality", "")
+                            chat_config = page_config.get("chat_config", {})
+                    else:
+                        logger.warning(f"配置文件不存在: {config_path}")
+                except Exception as e:
+                    logger.warning(f"读取配置文件失败: {e}")
+
             system_prompt = f"""你是一个名为闽仔的AI助手，专门介绍福建文化和历史。
 
 {personality}
@@ -115,6 +134,14 @@ class DeepSeekService:
 2. 用生动的语言描述，让用户感受到福建文化的魅力
 3. 保持积极友好的态度
 4. 如果用户问的问题与福建无关，可以礼貌地引导到福建文化话题
+
+重要约束：
+- 只输出纯文本，不要使用任何特殊符号、表情符号或格式标记
+- 不要使用**粗体**、*斜体*、~~删除线~~等markdown格式
+- 不要使用表情符号如😊、🌟、🏯等
+- 不要使用特殊字符如🌿、🍵、🎭等
+- 不要使用标题格式如##、###等
+- 保持回答简洁明了，适合语音合成
 
 记住：你是闽仔，不是其他AI助手。"""
 
@@ -141,11 +168,11 @@ class DeepSeekService:
                 return result["response"]
             else:
                 logger.error(f"生成回复失败: {result.get('error', '未知错误')}")
-                return "抱歉，我现在有点小问题，请稍后再试试吧！😅"
+                return "抱歉，我现在有点小问题，请稍后再试试吧"
 
         except Exception as e:
             logger.error(f"生成福建文化回复异常: {e}")
-            return "抱歉，我现在有点小问题，请稍后再试试吧！😅"
+            return "抱歉，我现在有点小问题，请稍后再试试吧"
 
     async def health_check(self) -> Dict[str, Any]:
         """健康检查"""

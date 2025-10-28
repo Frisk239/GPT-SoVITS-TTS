@@ -190,6 +190,15 @@ class GPTSoVITSService:
     def _setup_module_paths(self):
         """设置GPT-SoVITS模块路径到sys.path"""
         try:
+            # 下载NLTK数据包
+            logger.info("📥 下载NLTK数据包...")
+            import nltk
+            try:
+                nltk.download('averaged_perceptron_tagger_eng', quiet=True)
+                logger.info("✅ NLTK数据包下载完成")
+            except Exception as e:
+                logger.warning(f"⚠️ NLTK数据包下载失败: {e}")
+
             paths_to_add = [
                 self.gpt_sovits_path,  # 根目录
                 os.path.join(self.gpt_sovits_path, "AR"),
@@ -384,35 +393,24 @@ class GPTSoVITSService:
             return self._get_default_config()
 
     def _get_default_config(self) -> Dict:
-        """获取默认配置"""
+        """获取默认配置 - 从config.json文件读取"""
+        try:
+            # 尝试读取config.json文件
+            config_path = os.path.join(self.project_root, "backend", "config.json")
+            if os.path.exists(config_path):
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+                    logger.info("✅ 从config.json成功加载配置")
+                    return config
+            else:
+                logger.warning(f"⚠️ config.json文件不存在: {config_path}")
+        except Exception as e:
+            logger.error(f"❌ 读取config.json失败: {e}")
+
+        # 如果读取失败，返回基本的默认配置
+        logger.warning("⚠️ 使用基本默认配置")
         return {
-            "model_paths": {
-                "gpt_weights_dir": "../models/GPT-SoVITS/GPT_weights_v2Pro",
-                "sovits_weights_dir": "../models/GPT-SoVITS/SoVITS_weights_v2Pro"
-            },
-            "pages": {
-                "tts-chat": {
-                    "role": "minpaixinyu",
-                    "description": "闽仔 - 智能语音对话助手",
-                    "personality": "我是闽仔，你的闽派文化小伙伴。我可以与你进行智能对话，介绍福建的传统文化和历史故事。我的声音温柔亲切，适合进行文化交流和知识分享。",
-                    "voice_config": {
-                        "gpt_model": "minpaixinyu-e15.ckpt",
-                        "sovits_model": "minpaixinyu_e8_s200.pth",
-                        "ref_audio_path": "../models/GPT-SoVITS/GPT-SoVITS-slice/minpaixinyu-slicer.wav",
-                        "ref_audio_text": "第一场雪，这是入冬以来，胶东半岛上的第一场雪。",
-                        "voice_params": {
-                            "speed": 1.0,
-                            "pitch_shift": 1.0,
-                            "emotion_intensity": 0.7
-                        }
-                    },
-                    "chat_config": {
-                        "system_prompt": "你是一个名为闽仔的AI助手，专门介绍福建文化。你说话温柔亲切，知识丰富，总是以积极的态度回答用户的问题。你会用生动的语言描述福建的历史、文化和风景。",
-                        "temperature": 0.8,
-                        "max_tokens": 1000
-                    }
-                }
-            },
+            "pages": {},
             "default_page": "tts-chat",
             "synthesis_params": {
                 "top_k": 15,
@@ -424,8 +422,12 @@ class GPTSoVITSService:
                 "batch_size": 1,
                 "fragment_interval": 0.3,
                 "seed": -1,
-                "parallel_infer": true,
+                "parallel_infer": True,
                 "repetition_penalty": 1.35
+            },
+            "model_paths": {
+                "gpt_weights_dir": "../models/GPT-SoVITS/GPT_weights_v2Pro",
+                "sovits_weights_dir": "../models/GPT-SoVITS/SoVITS_weights_v2Pro"
             }
         }
 
